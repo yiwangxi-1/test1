@@ -53,9 +53,9 @@ git switch -c <branch name >	创建并切换分支
 原理（变基时发生了什么）：
 
  	1. 当我们发起变基时，git会首先找到两条分支的最近的共同祖先
- 	2. 对比当前分支相对于祖先的历史提交，并且将它们提取出来存储到一个临时文件中
- 	3. 将当前部分指向目标的基底
- 	4. 以当前基底开始，重新执行历史操做
+		2. 对比当前分支相对于祖先的历史提交，并且将它们提取出来存储到一个临时文件中
+		3. 将当前部分指向目标的基底
+		4. 以当前基底开始，重新执行历史操做
 
 变基和merge对于合并分支来说最终的结果是一样的，但是变基会使得代码的提交记录更整洁清晰， 注意：大部分情况下合并和变基是可以互换的，但是如果分支已经提交给了远程仓库，那么这时最好不要使用变基。
 
@@ -66,9 +66,48 @@ git switch -c <branch name >	创建并切换分支
 将本地库上传git: 
 
 ```bash
-git remote add origin https://github.com/yiwangxi-1/test1.git
-# git remote add <remote name> <url>
+git remote add origin https://github.com/yiwangxi-1/test1.git	# git remote add <remote name> <url>
 git branch -M main	# 修改分支为main
 git push -u origin main
+```
+
+### 远程库的操作的命令
+
+```bash
+git remote	# 列出当前的关联的远程库
+git remote add <远程库名> <url>	# 关联远程仓库
+git remote remove # 删除远程库
+git push -u <远程库名> <分支名> # 向远程库推送代码，并和当前分支关联
+git push <远程库名> <本地分支>:<远程分支>
+git clone <url> # 从远程库下载代码
+
+# 如果本地的版本低于远程库，push默认是推不上去，
+git fetch # 要想推送成功，必须确保本地库和远程库的版本一致, fetch它会从远程仓库下载所有代码，但是它不会将代码和当前分支自动合并
+			  # 使用fetch拉取代码后，需要手动对代码进行合并
+git pull # 从服务器上拉取代码并自动合并
+```
+
+注意： 推送代码之前，一定要先从远程库中拉取最新的代码
+
+### tag(标签)
+
+当头指针没有执行某个分支的头部时，这种状态我们称为分离头指针（head detached）,分离头指针的状态下也可以操作代码，但是这些操作不会出现任何的分支上，所以注意不要在分离头指针的状态下来操作仓库。
+
+如果非得要回到后边的节点对代码进行操作，则可以选择创建分支后再操作
+
+```bash
+git switch -c <分支名> <提交id>
+```
+
+可以为提交记录设置标签，设置标签后，可以通过标签快速的识别出不同的开发节点：
+
+```bash
+git tag
+git tag 版本
+git tag 版本 提交id
+git push 远程仓库 标签名
+git push 远程仓库 --tags
+git tag -d 标签名 	# 删除标签
+git push 远程仓库 --delete 标签名 # 删除远程标签
 ```
 
